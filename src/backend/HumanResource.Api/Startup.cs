@@ -1,3 +1,5 @@
+using AutoMapper;
+using HumanResource.ApplicationCore.AutoMappers;
 using HumanResource.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +34,9 @@ namespace EmployeeManagement.Api
             services.AddDbContext<DataContext>(option =>{
                 option.UseSqlServer(_config.GetConnectionString("LocalConnection"));
             });
+            services.AddSingleton<AutoMapper.IConfigurationProvider>(AutoMapperConfig.RegisterMappings());
+            //services.AddSingleton(<IConfigurationProvider>MapperConfiguration.RegisterMappings();
+            services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
             services.AddCors(opt => 
             {
                 opt.AddPolicy("CorsPolicy", policy =>
